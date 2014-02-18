@@ -11,9 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
-
 import net.paoding.analysis.analyzer.PaodingAnalyzer;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.cjk.CJKAnalyzer;
@@ -135,7 +133,7 @@ public class IndexAndSearch {
 		// // 将一个字符串创建成Token流
 		TokenStream tokenStream2 = analyzer.tokenStream("contents",
 				new StringReader(text));
-		tokenStream2.reset(); // Add this line removes NullPointerException
+		tokenStream2.reset(); // 必须要reset，不然会抛出NullPointerException
 		// 保存相应词汇
 		CharTermAttribute charTermAttribute2 = tokenStream2
 				.addAttribute(CharTermAttribute.class);
