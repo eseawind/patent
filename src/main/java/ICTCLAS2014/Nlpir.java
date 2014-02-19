@@ -130,6 +130,53 @@ public class Nlpir {
 		}
 	}
 
+	public static String doNlpirString(String inputString, String[] addWord,
+			String[] deleteWord) {
+		// ICTCLAS词库library(即Data文件夹)的相对路径
+		String library = Constants.ICTCLAS_LIBRARY_STRING;
+		// String system_charset = "GBK";//GBK----0
+		// String system_charset = "UTF-8";
+		int charset_type = 1;
+		int init_flag = CLibrary.Instance
+				.NLPIR_Init(library, charset_type, "0");
+		if (0 == init_flag) {
+			System.err.println("初始化失败！");
+			return null;
+		}
+		String nativeBytes = null;
+		try {
+			System.out.println("输入的文本为： " + inputString);
+			nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(inputString,
+					1);
+			System.out.println("分词结果为： " + nativeBytes);
+
+			// 如果用户需要增加词典，则显示增加词典的效果
+			if (addWord != null) {
+				for (int i = 0; i < addWord.length; i++) {
+					CLibrary.Instance.NLPIR_AddUserWord(addWord[i]);
+				}
+				nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(
+						inputString, 1);
+				System.out.println("增加用户词典后分词结果为： " + nativeBytes);
+			}
+
+			// 如果用户需要删除词典，则显示删除词典的效果
+			if (deleteWord != null) {
+				for (int i = 0; i < deleteWord.length; i++) {
+					CLibrary.Instance.NLPIR_DelUsrWord(deleteWord[i]);
+				}
+				nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(
+						inputString, 1);
+				System.out.println("删除用户词典后分词结果为： " + nativeBytes);
+			}
+			CLibrary.Instance.NLPIR_Exit();
+		} catch (Exception ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+		return nativeBytes;
+	}
+
 	/**
 	 * @param args
 	 */

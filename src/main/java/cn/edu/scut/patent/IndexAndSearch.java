@@ -16,6 +16,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.cjk.CJKAnalyzer;
 import org.apache.lucene.analysis.cn.ChineseAnalyzer;
+import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 import org.apache.lucene.analysis.core.StopAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
@@ -41,6 +42,9 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
 import org.apache.pdfbox.util.PDFTextStripper;
+import org.wltea.analyzer.lucene.IKAnalyzer;
+import ICTCLAS2014.Nlpir;
+import cn.edu.scut.qyj.ICTCLASAnalyzer.ICTCLASAnalyzer;
 
 /**
  * @author qyj
@@ -57,6 +61,7 @@ public class IndexAndSearch {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 	/**
@@ -67,7 +72,8 @@ public class IndexAndSearch {
 	private static void index() throws Exception {
 		// 索引文件(夹)的位置
 		File fileDir = new File(Constants.FILE_DIR_STRING);
-		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_46);
+		Analyzer analyzer = new ICTCLASAnalyzer(Version.LUCENE_46);
+		// Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_46);
 		// 存放索引文件的位置
 		Directory directory = FSDirectory.open(new File(
 				Constants.INDEX_DIR_STRING));
@@ -84,7 +90,7 @@ public class IndexAndSearch {
 		// printKeyWords(analyzer, result);
 		// testing analyzer
 		{
-			String text = "我爱天大,但我更爱中国";
+			String text = "据悉，质检总局已将       最新 good news  有关情况再次通报美方，要求美方加强对输华玉米的产地来源、运输及仓储等环节的管控措施，有效避免输华玉米被未经我国农业部安全评估并批准的转基因品系污染。";
 			Analyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_46);
 			printKeyWords(standardAnalyzer, text);
 			Analyzer stopAnalyzer = new StopAnalyzer(Version.LUCENE_46);
@@ -95,6 +101,14 @@ public class IndexAndSearch {
 			printKeyWords(chineseAnalyzer, text);
 			Analyzer paodingAnalyzer = new PaodingAnalyzer();
 			printKeyWords(paodingAnalyzer, text);
+			Analyzer ikAnalyzer = new IKAnalyzer();
+			printKeyWords(ikAnalyzer, text);
+			Analyzer smartChineseAnalyzer = new SmartChineseAnalyzer(
+					Version.LUCENE_46);
+			printKeyWords(smartChineseAnalyzer, text);
+			Analyzer ictclasAnalyzer = new ICTCLASAnalyzer(Version.LUCENE_46);
+			printKeyWords(ictclasAnalyzer,
+					Nlpir.doNlpirString(text, null, null));
 		}
 
 		indexWriter.addDocument(document);
