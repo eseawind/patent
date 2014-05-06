@@ -91,7 +91,7 @@ public class Nlpir {
 		try {
 			System.out.println("输入的文本为： " + inputString);
 			nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(inputString,
-					1);
+					0);
 			System.out.println("分词结果为： " + nativeBytes);
 
 			// 如果用户需要增加词典，则显示增加词典的效果
@@ -100,7 +100,7 @@ public class Nlpir {
 					CLibrary.Instance.NLPIR_AddUserWord(addWord[i]);
 				}
 				nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(
-						inputString, 1);
+						inputString, 0);
 				System.out.println("增加用户词典后分词结果为： " + nativeBytes);
 			}
 
@@ -110,7 +110,7 @@ public class Nlpir {
 					CLibrary.Instance.NLPIR_DelUsrWord(deleteWord[i]);
 				}
 				nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(
-						inputString, 1);
+						inputString, 0);
 				System.out.println("删除用户词典后分词结果为： " + nativeBytes);
 			}
 
@@ -147,7 +147,7 @@ public class Nlpir {
 		try {
 			System.out.println("输入的文本为： " + inputString);
 			nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(inputString,
-					1);
+					0);
 			System.out.println("分词结果为： " + nativeBytes);
 
 			// 如果用户需要增加词典，则显示增加词典的效果
@@ -156,7 +156,7 @@ public class Nlpir {
 					CLibrary.Instance.NLPIR_AddUserWord(addWord[i]);
 				}
 				nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(
-						inputString, 1);
+						inputString, 0);
 				System.out.println("增加用户词典后分词结果为： " + nativeBytes);
 			}
 
@@ -166,7 +166,7 @@ public class Nlpir {
 					CLibrary.Instance.NLPIR_DelUsrWord(deleteWord[i]);
 				}
 				nativeBytes = CLibrary.Instance.NLPIR_ParagraphProcess(
-						inputString, 1);
+						inputString, 0);
 				System.out.println("删除用户词典后分词结果为： " + nativeBytes);
 			}
 			CLibrary.Instance.NLPIR_Exit();

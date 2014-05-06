@@ -1,113 +1,61 @@
 package cn.edu.scut.qyj.ICTCLASAnalyzer;
 
-import java.io.File;
-import java.io.IOException;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import java.io.Reader;
-import java.util.Arrays;
-import java.util.List;
-import org.apache.lucene.analysis.Tokenizer;
-import org.apache.lucene.analysis.core.LowerCaseTokenizer;
-import org.apache.lucene.analysis.util.CharArraySet;
-import org.apache.lucene.analysis.util.StopwordAnalyzerBase;
-import org.apache.lucene.analysis.util.WordlistLoader;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.util.Version;
 
 /**
- * 除了stopword加上ICTCLAS的词性标记集外，完全由StopAnalyzer.java拷贝过来
+ * An Analyzer that uses {@link WhitespaceTokenizer}.
+ * <p>
+ * <a name="version">You must specify the required {@link Version} compatibility
+ * when creating {@link CharTokenizer}:
+ * <ul>
+ * <li>As of 3.1, {@link WhitespaceTokenizer} uses an int based API to normalize and
+ * detect token codepoints. See {@link CharTokenizer#isTokenChar(int)} and
+ * {@link CharTokenizer#normalize(int)} for details.</li>
+ * </ul>
+ * <p>
+ **/
+
+/**
+ * 完全由WhiteSpaceAnalyzer.java拷贝过来
  */
-public final class ICTCLASAnalyzer extends StopwordAnalyzerBase {
+public final class ICTCLASAnalyzer extends Analyzer {
+
+	private final Version matchVersion;
 
 	/**
-	 * An unmodifiable set containing some common English words that are not
-	 * usually useful for searching.
-	 */
-	public static final CharArraySet ENGLISH_STOP_WORDS_SET;
-
-	static {
-		final List<String> stopWords = Arrays.asList("a", "an", "and", "are",
-				"as", "at", "be", "but", "by", "for", "if", "in", "into", "is",
-				"it", "no", "not", "of", "on", "or", "such", "that", "the",
-				"their", "then", "there", "these", "they", "this", "to", "was",
-				"will", "with", "n", "nr", "nr1", "nr2", "nrj", "nrf", "ns",
-				"nsf", "nt", "nz", "nl", "ng", "t", "tg", "s", "f", "v", "vd",
-				"vn", "vshi", "vyou", "vf", "vx", "vi", "vl", "vg", "a", "ad",
-				"an", "ag", "al", "b", "bg", "bl", "z", "r", "rr", "rz", "rzt",
-				"rzs", "rzv", "ry", "ryt", "rys", "ryv", "rg", "m", "mq", "q",
-				"qv", "qt", "d", "p", "pba", "pbei", "c", "cc", "u", "uzhe",
-				"ule", "uguo", "ude", "ude1", "ude2", "ude3", "usuo", "udeng", "uyy",
-				"udh", "uls", "ujl", "uzhi", "ulian", "uqj", "e", "y", "o",
-				"h", "k", "x", "xx", "xu", "w", "wkz", "wky", "wyb", "wyz",
-				"wyy", "wj", "ww", "wt", "wd", "wf", "wn", "wm", "ws", "wp",
-				"wb", "wh");
-		final CharArraySet stopSet = new CharArraySet(Version.LUCENE_CURRENT,
-				stopWords, false);
-		ENGLISH_STOP_WORDS_SET = CharArraySet.unmodifiableSet(stopSet);
-	}
-
-	/**
-	 * Builds an analyzer which removes words in {@link #ENGLISH_STOP_WORDS_SET}
-	 * .
+	 * Creates a new {@link WhitespaceAnalyzer}
 	 * 
 	 * @param matchVersion
-	 *            See <a href="#version">above</a>
+	 *            Lucene version to match See
+	 *            {@link <a href="#version">above</a>}
 	 */
 	public ICTCLASAnalyzer(Version matchVersion) {
-		this(matchVersion, ENGLISH_STOP_WORDS_SET);
+		this.matchVersion = matchVersion;
 	}
 
-	/**
-	 * Builds an analyzer with the stop words from the given set.
-	 * 
-	 * @param matchVersion
-	 *            See <a href="#version">above</a>
-	 * @param stopWords
-	 *            Set of stop words
-	 */
-	public ICTCLASAnalyzer(Version matchVersion, CharArraySet stopWords) {
-		super(matchVersion, stopWords);
-	}
-
-	/**
-	 * Builds an analyzer with the stop words from the given file.
-	 * 
-	 * @see WordlistLoader#getWordSet(Reader, Version)
-	 * @param matchVersion
-	 *            See <a href="#version">above</a>
-	 * @param stopwordsFile
-	 *            File to load stop words from
-	 */
-	public ICTCLASAnalyzer(Version matchVersion, File stopwordsFile)
-			throws IOException {
-		this(matchVersion, loadStopwordSet(stopwordsFile, matchVersion));
-	}
-
-	/**
-	 * Builds an analyzer with the stop words from the given reader.
-	 * 
-	 * @see WordlistLoader#getWordSet(Reader, Version)
-	 * @param matchVersion
-	 *            See <a href="#version">above</a>
-	 * @param stopwords
-	 *            Reader to load stop words from
-	 */
-	public ICTCLASAnalyzer(Version matchVersion, Reader stopwords)
-			throws IOException {
-		this(matchVersion, loadStopwordSet(stopwords, matchVersion));
-	}
-
-	/**
-	 * Creates {@link org.apache.lucene.analysis.Analyzer.TokenStreamComponents}
-	 * used to tokenize all the text in the provided {@link Reader}.
-	 * 
-	 * @return {@link org.apache.lucene.analysis.Analyzer.TokenStreamComponents}
-	 *         built from a {@link LowerCaseTokenizer} filtered with
-	 *         {@link StopFilter}
-	 */
 	@Override
-	protected TokenStreamComponents createComponents(String fieldName,
-			Reader reader) {
-		final Tokenizer source = new LowerCaseTokenizer(matchVersion, reader);
-		return new TokenStreamComponents(source, new ICTCLASFilter(
-				matchVersion, source, stopwords));
+	protected TokenStreamComponents createComponents(final String fieldName,
+			final Reader reader) {
+		return new TokenStreamComponents(new ICTCLASTokenizer(matchVersion,
+				reader));
 	}
 }

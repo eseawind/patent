@@ -45,6 +45,7 @@ import org.apache.pdfbox.util.PDFTextStripper;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 import ICTCLAS2014.Nlpir;
 import cn.edu.scut.qyj.ICTCLASAnalyzer.ICTCLASAnalyzer;
+import cn.edu.scut.qyj.ICTCLASAnalyzer.ICTCLASAnalyzer;
 
 /**
  * @author qyj
@@ -56,7 +57,7 @@ public class IndexAndSearch {
 		// TODO Auto-generated method stub
 		try {
 			index();
-			// search("龙", "contents");
+			// search("孙皓", "contents");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -90,7 +91,7 @@ public class IndexAndSearch {
 		// printKeyWords(analyzer, result);
 		// testing analyzer
 		{
-			String text = "据悉，质检总局已将       最新 good news  有关情况再次通报美方，要求美方加强对输华玉米的产地来源、运输及仓储等环节的管控措施，有效避免输华玉米被未经我国农业部安全评估并批准的转基因品系污染。";
+			String text = "据悉，质检总局已将       最新 good   有关情况再次G60Q80通报美方，要求美方123142.11加强对输华玉米的产地来源、运输及仓储等环节的管控措施，有效避免输华玉米被未经我国农业部安全评估并批准的转基因品系污染。";
 			Analyzer standardAnalyzer = new StandardAnalyzer(Version.LUCENE_46);
 			printKeyWords(standardAnalyzer, text);
 			Analyzer stopAnalyzer = new StopAnalyzer(Version.LUCENE_46);
@@ -172,7 +173,8 @@ public class IndexAndSearch {
 				Constants.INDEX_DIR_STRING));
 		IndexReader indexreader = DirectoryReader.open(directory);
 		IndexSearcher searcher = new IndexSearcher(indexreader);
-		Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_46);
+		Analyzer analyzer = new ICTCLASAnalyzer(Version.LUCENE_46);
+		// Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_46);
 		try {
 			QueryParser queryParser = new QueryParser(Version.LUCENE_46, field,
 					analyzer);
